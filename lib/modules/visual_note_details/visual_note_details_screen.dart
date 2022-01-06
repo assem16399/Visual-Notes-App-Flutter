@@ -34,7 +34,9 @@ class VisualNotesDetails extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       height: deviceSize.height * 0.35,
-                      child: Image.asset('assets/images/chair.png'),
+                      child: visualNote.image == null
+                          ? Image.asset('assets/images/chair.png')
+                          : Image.file(visualNote.image!),
                     ),
                     const WhiteSpace(
                       isHorizontal: false,
