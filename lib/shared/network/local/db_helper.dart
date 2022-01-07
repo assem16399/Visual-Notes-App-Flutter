@@ -27,4 +27,19 @@ abstract class DBHelper {
     //fetch all the data records of this table
     return await sqlDatabase.query(table);
   }
+
+  static Future<void> delete(String table, int id) async {
+    //access the database
+    final sqlDatabase = await DBHelper.database();
+    // insert this data into this table
+    await sqlDatabase.delete(table, where: 'id=?', whereArgs: [id]);
+  }
+
+  static Future<void> update(String table, Map<String, dynamic> data, int id) async {
+    //access the database
+    final sqlDatabase = await DBHelper.database();
+    // insert this data into this table
+    await sqlDatabase.update(table, data,
+        where: 'id=?', whereArgs: [id], conflictAlgorithm: sql.ConflictAlgorithm.replace);
+  }
 }

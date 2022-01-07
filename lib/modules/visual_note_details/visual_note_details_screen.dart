@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:visual_notes_app/models/visual_note.dart';
 import 'package:visual_notes_app/modules/edit_visual_note/edit_visual_note_screen.dart';
 import '/providers/visual_notes_provider.dart';
 import '/shared/components/widgets/white_space.dart';
@@ -41,39 +42,31 @@ class VisualNotesDetails extends StatelessWidget {
                     const WhiteSpace(
                       isHorizontal: false,
                     ),
-                    const DetailsTitle(
+                    const Title(
                       title: 'Case Description',
                     ),
-                    Text(
-                      visualNote.description,
-                    ),
+                    TitleDetails(text: visualNote.description),
                     const WhiteSpace(
                       isHorizontal: false,
                     ),
-                    const DetailsTitle(
+                    const Title(
                       title: 'Date Taken',
                     ),
-                    Text(
-                      DateFormat.yMd().format(visualNote.date['date']),
-                    ),
-                    Text(
-                      visualNote.date['time'],
-                    ),
+                    TitleDetails(text: DateFormat.yMd().format(visualNote.date['date'])),
+                    TitleDetails(text: visualNote.date['time']),
                     const WhiteSpace(
                       isHorizontal: false,
                     ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const DetailsTitle(
+                        const Title(
                           title: 'Status',
                         ),
                         const WhiteSpace(
                           isHorizontal: true,
                         ),
-                        Text(
-                          visualNote.isOpened ? 'Opened' : 'Closed',
-                        ),
+                        TitleDetails(text: visualNote.isOpened ? 'Opened' : 'Closed'),
                       ],
                     )
                   ],
@@ -90,15 +83,29 @@ class VisualNotesDetails extends StatelessWidget {
   }
 }
 
-class DetailsTitle extends StatelessWidget {
-  const DetailsTitle({Key? key, required this.title}) : super(key: key);
+class TitleDetails extends StatelessWidget {
+  const TitleDetails({Key? key, required this.text}) : super(key: key);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.bodyText2,
+    );
+  }
+}
+
+class Title extends StatelessWidget {
+  const Title({Key? key, required this.title}) : super(key: key);
 
   final String title;
   @override
   Widget build(BuildContext context) {
     return Text(
       '$title:',
-      style: Theme.of(context).textTheme.headline6,
+      style: Theme.of(context).textTheme.bodyText1,
     );
   }
 }

@@ -81,10 +81,22 @@ class VisualNotesProvider with ChangeNotifier {
     final editedNoteIndex = _visualNotes.indexWhere((visualNote) => visualNote.id == id);
     _visualNotes[editedNoteIndex] = editedVisualNote;
     notifyListeners();
+    DBHelper.update(
+        'visual_notes',
+        {
+          'image': editedVisualNote.image!.path,
+          'title': editedVisualNote.title,
+          'description': editedVisualNote.description,
+          'date': editedVisualNote.date['date'].toIso8601String(),
+          'time': editedVisualNote.date['time'],
+          'status': editedVisualNote.isOpened ? 1 : 0
+        },
+        id);
   }
 
   void deleteVisualNote(int id) {
     _visualNotes.removeWhere((visualNote) => visualNote.id == id);
     notifyListeners();
+    DBHelper.delete('visual_notes', id);
   }
 }

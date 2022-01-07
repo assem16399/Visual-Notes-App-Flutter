@@ -56,11 +56,12 @@ class VisualNotesListItem extends StatelessWidget {
                     child: Text(
                       title,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.headline6,
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ),
                   Text(
                     DateFormat.yMd().format(date['date']),
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
                   Text(
                     date['time'],
@@ -71,10 +72,11 @@ class VisualNotesListItem extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // ListItemIcon(
-                  //   iconData: Icons.chair,
-                  //   onPressed: () {},
-                  // ),
+                  ListItemIcon(
+                    iconData: Icons.chair,
+                    color: Colors.deepPurple,
+                    onPressed: () {},
+                  ),
                   ListItemIcon(
                     iconData: Icons.delete,
                     onPressed: () {
