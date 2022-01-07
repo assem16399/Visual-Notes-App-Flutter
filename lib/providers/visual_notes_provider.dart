@@ -1,10 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:visual_notes_app/models/visual_note.dart';
+import 'package:visual_notes_app/shared/network/local/db_helper.dart';
 
 //this class is considered as your data container (provider)
 class VisualNotesProvider with ChangeNotifier {
   // List of Visual Notes
-  final List<VisualNote> _visualNotes = [
+  List<VisualNote> _visualNotes = [
     // VisualNote(
     //     id: 1,
     //     title: 'Visual Note Sample 1',
@@ -34,11 +37,44 @@ class VisualNotesProvider with ChangeNotifier {
     return _visualNotes.firstWhere((visualNote) => visualNote.id == id);
   }
 
-  int _counter = 0;
-  void addVisualNote(VisualNote visualNote) {
-    _counter++;
-    _visualNotes.add(visualNote.copyWith(id: _counter));
-    notifyListeners();
+  Future<void> fetchAndSetVisualNotes() async {
+    try {
+      final extractedData = await DBHelper.getData('visual_notes');
+      _visualNotes = extractedData
+          .map(
+            (visualNote) => VisualNote(
+                id: visualNote['id'],
+                title: visualNote['title'],
+                image: File(visualNote['image']),
+                description: visualNote['description'],
+                date: {
+                  'date': DateTime.parse(visualNote['date']),
+                  'time': visualNote['time'],
+                },
+                isOpened: visualNote['status'] == 0 ? false : true),
+          )
+          .toList();
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> addVisualNote(VisualNote visualNote) async {
+    try {
+      final id = await DBHelper.insert('visual_notes', {
+        'image': visualNote.image!.path,
+        'title': visualNote.title,
+        'description': visualNote.description,
+        'date': visualNote.date['date'].toIso8601String(),
+        'time': visualNote.date['time'],
+        'status': visualNote.isOpened ? 1 : 0
+      });
+      _visualNotes.add(visualNote.copyWith(id: id));
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
   }
 
   void updateExistingNote(int id, VisualNote editedVisualNote) {

@@ -52,7 +52,7 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
         firstDate: DateTime(2022));
   }
 
-  void submitForm() {
+  void submitForm() async {
     if (_visualNote!.image == null) {
       toast('Please take a picture first.');
       return;
@@ -60,7 +60,14 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       if (_visualNote!.id == null) {
-        Provider.of<VisualNotesProvider>(context, listen: false).addVisualNote(_visualNote!);
+        try {
+          await Provider.of<VisualNotesProvider>(context, listen: false)
+              .addVisualNote(_visualNote!);
+          toast('Added Successfully');
+        } catch (_) {
+          toast('Something Went Wrong!');
+          return;
+        }
       } else {
         Provider.of<VisualNotesProvider>(context, listen: false)
             .updateExistingNote(_visualNote!.id!, _visualNote!);
@@ -80,7 +87,7 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
         'description': _visualNote!.description,
       };
       _dateController.text = DateFormat.yMd().format(_visualNote!.date['date']);
-      _timeController.text = _visualNote!.date['time'].format(context);
+      _timeController.text = _visualNote!.date['time'];
       _currentStatus = _visualNote!.isOpened ? 'Opened' : 'Closed';
     }
     super.didChangeDependencies();
@@ -188,9 +195,10 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
                         },
                         onTap: () async {
                           FocusScope.of(context).requestFocus(focusNode);
-                          _visualNote!.date['time'] = await _displayTimePicker(context);
-                          if (_visualNote!.date['time'] != null) {
-                            _timeController.text = _visualNote!.date['time'].format(context);
+                          final time = await _displayTimePicker(context);
+                          if (time != null) {
+                            _visualNote!.date['time'] = time.format(context);
+                            _timeController.text = _visualNote!.date['time'];
                           }
                         },
                         decoration: const InputDecoration(labelText: 'Time'),

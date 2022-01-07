@@ -57,7 +57,7 @@ class VisualNotesDetails extends StatelessWidget {
                       DateFormat.yMd().format(visualNote.date['date']),
                     ),
                     Text(
-                      visualNote.date['time'].format(context),
+                      visualNote.date['time'],
                     ),
                     const WhiteSpace(
                       isHorizontal: false,

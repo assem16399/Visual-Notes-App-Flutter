@@ -51,15 +51,19 @@ class VisualNotesListItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const WhiteSpace(isHorizontal: false),
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.headline6,
+                  SizedBox(
+                    width: title.length < 15 ? null : deviceSize.width * 0.5,
+                    child: Text(
+                      title,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
                   ),
                   Text(
                     DateFormat.yMd().format(date['date']),
                   ),
                   Text(
-                    date['time'].format(context),
+                    date['time'],
                   ),
                 ],
               ),
@@ -99,6 +103,7 @@ class ListItemIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      splashRadius: 20,
       onPressed: onPressed,
       icon: Icon(
         iconData,
