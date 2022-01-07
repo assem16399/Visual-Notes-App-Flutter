@@ -12,14 +12,19 @@ class VisualNotesList extends StatelessWidget {
     final visualNotesProvider = Provider.of<VisualNotesProvider>(context);
 
     final visualNotes = visualNotesProvider.visualNotes;
-    return ListView.separated(
-      separatorBuilder: (context, _) => const Divider(),
-      itemCount: visualNotes.length,
-      itemBuilder: (context, index) => VisualNotesListItem(
-        id: visualNotes[index].id!,
-        title: visualNotes[index].title,
-        date: visualNotes[index].date,
-      ),
-    );
+    return visualNotes.isEmpty
+        ? const Center(
+            child: Text('Start Adding Some Notes'),
+          )
+        : ListView.separated(
+            separatorBuilder: (context, _) => const Divider(),
+            itemCount: visualNotes.length,
+            itemBuilder: (context, index) => VisualNotesListItem(
+              id: visualNotes[index].id!,
+              title: visualNotes[index].title,
+              date: visualNotes[index].date,
+              image: visualNotes[index].image!,
+            ),
+          );
   }
 }

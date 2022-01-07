@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -11,12 +13,14 @@ class VisualNotesListItem extends StatelessWidget {
     Key? key,
     required this.date,
     required this.title,
+    required this.image,
     required this.id,
   }) : super(key: key);
 
   final int id;
   final String title;
   final Map date;
+  final File image;
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +40,12 @@ class VisualNotesListItem extends StatelessWidget {
               SizedBox(
                 width: deviceSize.width * 0.22,
                 height: double.infinity,
-                child: Image.asset(
-                  'assets/images/chair.png',
+                child: Image.file(
+                  image,
                   fit: BoxFit.cover,
                 ),
               ),
+              const WhiteSpace(isHorizontal: true),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -62,10 +67,10 @@ class VisualNotesListItem extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ListItemIcon(
-                    iconData: Icons.chair,
-                    onPressed: () {},
-                  ),
+                  // ListItemIcon(
+                  //   iconData: Icons.chair,
+                  //   onPressed: () {},
+                  // ),
                   ListItemIcon(
                     iconData: Icons.delete,
                     onPressed: () {

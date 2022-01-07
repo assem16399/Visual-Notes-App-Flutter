@@ -1,12 +1,16 @@
 import 'dart:io';
 
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart' as sys_paths;
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:visual_notes_app/shared/styles/colors.dart';
 
 class ImageInput extends StatefulWidget {
-  const ImageInput({Key? key, required this.getImage}) : super(key: key);
+  const ImageInput({Key? key, required this.getImage, this.image}) : super(key: key);
   final void Function(File image) getImage;
+  final File? image;
 
   @override
   _ImageInputState createState() => _ImageInputState();
@@ -16,7 +20,10 @@ class _ImageInputState extends State<ImageInput> {
   File? _storedImage;
 
   Future<void> _takePicture() async {
+    //create object from ImagePicker class
     final imagePicker = ImagePicker();
+
+    // take a picture using device camera
     final imageFile = await imagePicker.pickImage(source: ImageSource.camera, maxWidth: 600);
     if (imageFile == null) {
       return;
@@ -24,7 +31,14 @@ class _ImageInputState extends State<ImageInput> {
     setState(() {
       _storedImage = File(imageFile.path);
     });
-    widget.getImage(_storedImage!);
+
+    // to get the paths that operating system gives us to store data
+    final appDir = await sys_paths.getApplicationDocumentsDirectory();
+    // to get the name of the taken image by the camera
+    final imageFileName = path.basename(imageFile.path);
+    // copy or store the image in the path we created
+    final savedImage = await _storedImage!.copy('${appDir.path}/$imageFileName');
+    widget.getImage(savedImage);
   }
 
   @override
@@ -44,10 +58,16 @@ class _ImageInputState extends State<ImageInput> {
                   fit: BoxFit.cover,
                   width: double.infinity,
                 )
-              : const Text(
-                  'No Image Selected!',
-                  textAlign: TextAlign.center,
-                ),
+              : widget.image == null
+                  ? const Text(
+                      'No Image Selected!',
+                      textAlign: TextAlign.center,
+                    )
+                  : Image.file(
+                      widget.image!,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
           alignment: Alignment.center,
         ),
         SizedBox(
