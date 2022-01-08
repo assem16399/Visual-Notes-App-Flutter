@@ -5,6 +5,12 @@ import 'package:visual_notes_app/providers/visual_notes_provider.dart';
 import 'package:visual_notes_app/shared/components/widgets/background_image_container.dart';
 import 'package:visual_notes_app/shared/components/widgets/visual_notes_list.dart';
 
+enum FilterOptions {
+  showAll,
+  opened,
+  closed,
+}
+
 class VisualNotesOverviewScreen extends StatefulWidget {
   const VisualNotesOverviewScreen({Key? key}) : super(key: key);
 
@@ -26,11 +32,43 @@ class _VisualNotesOverviewScreenState extends State<VisualNotesOverviewScreen> {
     super.initState();
   }
 
+  var _selectedFilter = FilterOptions.showAll;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Visual Notes'),
+        title: Text(_selectedFilter == FilterOptions.showAll
+            ? 'All Visual Notes'
+            : _selectedFilter == FilterOptions.opened
+                ? 'Opened Visual Notes'
+                : 'Closed Visual Notes'),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: const Text('Show All'),
+                value: FilterOptions.showAll,
+                enabled: _selectedFilter == FilterOptions.showAll ? false : true,
+              ),
+              PopupMenuItem(
+                child: const Text('Shop Opened'),
+                value: FilterOptions.opened,
+                enabled: _selectedFilter == FilterOptions.opened ? false : true,
+              ),
+              PopupMenuItem(
+                child: const Text('Show Closed'),
+                value: FilterOptions.closed,
+                enabled: _selectedFilter == FilterOptions.closed ? false : true,
+              ),
+            ],
+            onSelected: (FilterOptions selectedValue) {
+              setState(() {
+                _selectedFilter = selectedValue;
+              });
+            },
+          )
+        ],
       ),
       body: BackgroundImageContainer(
         image: 'assets/images/chair.jpg',
@@ -48,7 +86,9 @@ class _VisualNotesOverviewScreenState extends State<VisualNotesOverviewScreen> {
                   child: Text('Something Went Wrong!'),
                 );
               } else {
-                return const VisualNotesList();
+                return VisualNotesList(
+                  selectedFilter: _selectedFilter,
+                );
               }
             },
           ),

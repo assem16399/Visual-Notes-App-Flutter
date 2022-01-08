@@ -14,6 +14,14 @@ class VisualNotesProvider with ChangeNotifier {
     return [..._visualNotes];
   }
 
+  List<VisualNote> get openedVisualNotes {
+    return _visualNotes.where((visualNote) => visualNote.isOpened).toList();
+  }
+
+  List<VisualNote> get closedVisualNotes {
+    return _visualNotes.where((visualNote) => !visualNote.isOpened).toList();
+  }
+
   VisualNote findVisualNoteById(int id) {
     return _visualNotes.firstWhere((visualNote) => visualNote.id == id);
   }

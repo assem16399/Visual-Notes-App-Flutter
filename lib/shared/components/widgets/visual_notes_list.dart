@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:visual_notes_app/modules/visual_notes_overview/visual_notes_overview_screen.dart';
 import '/providers/visual_notes_provider.dart';
 import '/shared/components/widgets/visual_notes_list_item.dart';
 
 class VisualNotesList extends StatelessWidget {
-  const VisualNotesList({Key? key}) : super(key: key);
+  const VisualNotesList({Key? key, required this.selectedFilter}) : super(key: key);
 
+  final FilterOptions selectedFilter;
   @override
   Widget build(BuildContext context) {
     final visualNotesProvider = Provider.of<VisualNotesProvider>(context);
-    final visualNotes = visualNotesProvider.visualNotes;
+
+    final visualNotes = selectedFilter == FilterOptions.showAll
+        ? visualNotesProvider.visualNotes
+        : selectedFilter == FilterOptions.opened
+            ? visualNotesProvider.openedVisualNotes
+            : visualNotesProvider.closedVisualNotes;
     return visualNotes.isEmpty
         ? Center(
             child: Column(
