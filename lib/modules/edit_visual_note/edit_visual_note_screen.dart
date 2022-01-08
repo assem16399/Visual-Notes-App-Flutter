@@ -29,12 +29,20 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
 
   final _dateController = TextEditingController();
   final _timeController = TextEditingController();
+
   String? _currentStatus;
 
   final List<String> _statuses = ['Opened', 'Closed'];
 
-  VisualNote? _visualNote =
-      VisualNote(id: null, title: '', description: '', date: {}, isOpened: false, image: null);
+  VisualNote? _visualNote = VisualNote(
+      id: null,
+      title: '',
+      description: '',
+      date: {
+        'date': DateTime.now(),
+      },
+      isOpened: false,
+      image: null);
 
   void getImage(File image) {
     _visualNote = _visualNote!.copyWith(image: image);
@@ -89,6 +97,11 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
       _dateController.text = DateFormat.yMd().format(_visualNote!.date['date']);
       _timeController.text = _visualNote!.date['time'];
       _currentStatus = _visualNote!.isOpened ? 'Opened' : 'Closed';
+    } else {
+      String currentTime = TimeOfDay.now().format(context);
+      _visualNote!.date['time'] = currentTime;
+      _dateController.text = DateFormat.yMd().format(DateTime.now());
+      _timeController.text = TimeOfDay.now().format(context);
     }
     super.didChangeDependencies();
   }

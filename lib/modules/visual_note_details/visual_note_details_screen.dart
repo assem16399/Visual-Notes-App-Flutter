@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:visual_notes_app/models/visual_note.dart';
 import 'package:visual_notes_app/modules/edit_visual_note/edit_visual_note_screen.dart';
 import '/providers/visual_notes_provider.dart';
 import '/shared/components/widgets/white_space.dart';
@@ -35,9 +34,16 @@ class VisualNotesDetails extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       height: deviceSize.height * 0.35,
-                      child: visualNote.image == null
-                          ? Image.asset('assets/images/chair.png')
-                          : Image.file(visualNote.image!),
+                      child: InteractiveViewer(
+                        panEnabled: false,
+                        boundaryMargin: const EdgeInsets.all(100),
+                        minScale: 0.5,
+                        maxScale: 2,
+                        child: Hero(
+                          tag: visualNote.id!,
+                          child: Image.file(visualNote.image!),
+                        ),
+                      ),
                     ),
                     const WhiteSpace(
                       isHorizontal: false,

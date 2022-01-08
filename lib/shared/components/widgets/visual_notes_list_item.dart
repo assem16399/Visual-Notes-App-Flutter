@@ -40,9 +40,12 @@ class VisualNotesListItem extends StatelessWidget {
               SizedBox(
                 width: deviceSize.width * 0.22,
                 height: double.infinity,
-                child: Image.file(
-                  image,
-                  fit: BoxFit.cover,
+                child: Hero(
+                  tag: id,
+                  child: Image.file(
+                    image,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               const WhiteSpace(isHorizontal: true),
