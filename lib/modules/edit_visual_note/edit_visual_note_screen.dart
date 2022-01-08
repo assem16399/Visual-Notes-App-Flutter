@@ -34,15 +34,8 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
 
   final List<String> _statuses = ['Opened', 'Closed'];
 
-  VisualNote? _visualNote = VisualNote(
-      id: null,
-      title: '',
-      description: '',
-      date: {
-        'date': DateTime.now(),
-      },
-      isOpened: false,
-      image: null);
+  VisualNote? _visualNote =
+      VisualNote(id: null, title: '', description: '', date: {}, isOpened: false, image: null);
 
   void getImage(File image) {
     _visualNote = _visualNote!.copyWith(image: image);
@@ -72,37 +65,52 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
           await Provider.of<VisualNotesProvider>(context, listen: false)
               .addVisualNote(_visualNote!);
           toast('Added Successfully');
-        } catch (_) {
+        } catch (error) {
           toast('Something Went Wrong!');
+          print(error);
           return;
         }
       } else {
-        Provider.of<VisualNotesProvider>(context, listen: false)
-            .updateExistingNote(_visualNote!.id!, _visualNote!);
+        try {
+          await Provider.of<VisualNotesProvider>(context, listen: false)
+              .updateExistingNote(_visualNote!.id!, _visualNote!);
+          toast('Edited Successfully');
+        } catch (error) {
+          toast('Something Went Wrong!');
+          print(error);
+          return;
+        }
       }
       Navigator.of(context).pop();
     }
   }
 
+  var _isDidChangeDepCalled = false;
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
-    final id = ModalRoute.of(context)!.settings.arguments as int?;
-    if (id != null) {
-      _visualNote = Provider.of<VisualNotesProvider>(context, listen: false).findVisualNoteById(id);
-      _initialData = {
-        'title': _visualNote!.title,
-        'description': _visualNote!.description,
-      };
-      _dateController.text = DateFormat.yMd().format(_visualNote!.date['date']);
-      _timeController.text = _visualNote!.date['time'];
-      _currentStatus = _visualNote!.isOpened ? 'Opened' : 'Closed';
-    } else {
-      String currentTime = TimeOfDay.now().format(context);
-      _visualNote!.date['time'] = currentTime;
-      _dateController.text = DateFormat.yMd().format(DateTime.now());
-      _timeController.text = TimeOfDay.now().format(context);
+    if (!_isDidChangeDepCalled) {
+      print('didChangeDependencies called');
+      final id = ModalRoute.of(context)!.settings.arguments as int?;
+      if (id != null) {
+        _visualNote =
+            Provider.of<VisualNotesProvider>(context, listen: false).findVisualNoteById(id);
+        _initialData = {
+          'title': _visualNote!.title,
+          'description': _visualNote!.description,
+        };
+        _dateController.text = DateFormat.yMd().format(_visualNote!.date['date']);
+        _timeController.text = _visualNote!.date['time'];
+        _currentStatus = _visualNote!.isOpened ? 'Opened' : 'Closed';
+      } else {
+        _visualNote!.date['date'] = DateTime.now();
+        _visualNote!.date['time'] = TimeOfDay.now().format(context);
+        _dateController.text = DateFormat.yMd().format(_visualNote!.date['date']);
+        _timeController.text = _visualNote!.date['time'];
+      }
+      _isDidChangeDepCalled = true;
     }
+
     super.didChangeDependencies();
   }
 
@@ -123,7 +131,12 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_visualNote!.id == null ? 'Create New Visual Note' : 'Edit Visual Note'),
-        actions: [IconButton(onPressed: submitForm, icon: const Icon(Icons.check))],
+        actions: [
+          IconButton(
+            onPressed: submitForm,
+            icon: const Icon(Icons.check),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -186,10 +199,14 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
                         onTap: () async {
                           FocusScope.of(context).requestFocus(focusNode);
 
-                          _visualNote!.date['date'] = await _displayDatePicker(context);
-                          if (_visualNote!.date['date'] != null) {
-                            _dateController.text =
-                                DateFormat.yMd().format(_visualNote!.date['date']);
+                          final date = await _displayDatePicker(context);
+                          if (date != null) {
+                            print('date set');
+                            _visualNote!.date['date'] = date;
+                            _dateController.text = DateFormat.yMd().format(date);
+
+                            print(_visualNote!.date['date']);
+                            print(_dateController.text);
                           }
                         },
                         decoration: const InputDecoration(labelText: 'Date'),
@@ -210,8 +227,11 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
                           FocusScope.of(context).requestFocus(focusNode);
                           final time = await _displayTimePicker(context);
                           if (time != null) {
+                            print('time set');
                             _visualNote!.date['time'] = time.format(context);
-                            _timeController.text = _visualNote!.date['time'];
+                            _timeController.text = time.format(context);
+                            print(_visualNote!.date['time']);
+                            print(_timeController.text);
                           }
                         },
                         decoration: const InputDecoration(labelText: 'Time'),

@@ -77,21 +77,25 @@ class VisualNotesProvider with ChangeNotifier {
     }
   }
 
-  void updateExistingNote(int id, VisualNote editedVisualNote) {
-    final editedNoteIndex = _visualNotes.indexWhere((visualNote) => visualNote.id == id);
-    _visualNotes[editedNoteIndex] = editedVisualNote;
-    notifyListeners();
-    DBHelper.update(
-        'visual_notes',
-        {
-          'image': editedVisualNote.image!.path,
-          'title': editedVisualNote.title,
-          'description': editedVisualNote.description,
-          'date': editedVisualNote.date['date'].toIso8601String(),
-          'time': editedVisualNote.date['time'],
-          'status': editedVisualNote.isOpened ? 1 : 0
-        },
-        id);
+  Future<void> updateExistingNote(int id, VisualNote editedVisualNote) async {
+    try {
+      await DBHelper.update(
+          'visual_notes',
+          {
+            'image': editedVisualNote.image!.path,
+            'title': editedVisualNote.title,
+            'description': editedVisualNote.description,
+            'date': editedVisualNote.date['date'].toIso8601String(),
+            'time': editedVisualNote.date['time'],
+            'status': editedVisualNote.isOpened ? 1 : 0
+          },
+          id);
+      final editedNoteIndex = _visualNotes.indexWhere((visualNote) => visualNote.id == id);
+      _visualNotes[editedNoteIndex] = editedVisualNote;
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
   }
 
   void deleteVisualNote(int id) {

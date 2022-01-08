@@ -13,8 +13,7 @@ class VisualNotesDetails extends StatelessWidget {
     // visual note Id
     final id = ModalRoute.of(context)!.settings.arguments as int;
     //visual note data of that id
-    final visualNote =
-        Provider.of<VisualNotesProvider>(context, listen: false).findVisualNoteById(id);
+    final visualNote = Provider.of<VisualNotesProvider>(context).findVisualNoteById(id);
     //device size
     final deviceSize = MediaQuery.of(context).size;
     //device orientation
