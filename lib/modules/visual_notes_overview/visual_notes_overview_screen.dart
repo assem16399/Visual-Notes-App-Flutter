@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:visual_notes_app/modules/edit_visual_note/edit_visual_note_screen.dart';
 import 'package:visual_notes_app/providers/visual_notes_provider.dart';
+import 'package:visual_notes_app/shared/components/widgets/background_image_container.dart';
 import 'package:visual_notes_app/shared/components/widgets/visual_notes_list.dart';
 
 class VisualNotesOverviewScreen extends StatefulWidget {
@@ -27,19 +28,12 @@ class _VisualNotesOverviewScreenState extends State<VisualNotesOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Visual Notes'),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: const AssetImage('assets/images/chair.jpg'),
-            colorFilter: ColorFilter.mode(Colors.transparent.withOpacity(0.2), BlendMode.dstATop),
-          ),
-        ),
+      body: BackgroundImageContainer(
+        image: 'assets/images/chair.jpg',
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: FutureBuilder(

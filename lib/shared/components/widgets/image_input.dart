@@ -24,7 +24,8 @@ class _ImageInputState extends State<ImageInput> {
     final imagePicker = ImagePicker();
 
     // take a picture using device camera
-    final imageFile = await imagePicker.pickImage(source: ImageSource.camera, maxWidth: 600);
+    final imageFile = await imagePicker.pickImage(
+        source: ImageSource.camera, maxWidth: 600, preferredCameraDevice: CameraDevice.rear);
     if (imageFile == null) {
       return;
     }
@@ -78,7 +79,8 @@ class _ImageInputState extends State<ImageInput> {
             label: const Text('Take a Picture'),
             icon: const Icon(Icons.camera),
             style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.all(kSecondaryColor),
+              //foregroundColor: MaterialStateProperty.all(kSecondaryColor),
+              backgroundColor: MaterialStateProperty.all(kSecondaryColor),
             ),
             onPressed: _takePicture,
           ),

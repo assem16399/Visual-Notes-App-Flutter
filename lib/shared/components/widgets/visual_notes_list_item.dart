@@ -73,13 +73,8 @@ class VisualNotesListItem extends StatelessWidget {
               ),
               const Spacer(),
               Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  ListItemIcon(
-                    iconData: Icons.chair,
-                    color: Colors.deepPurple,
-                    onPressed: () {},
-                  ),
                   ListItemIcon(
                     iconData: Icons.delete,
                     onPressed: () {

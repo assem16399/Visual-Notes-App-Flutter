@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:visual_notes_app/shared/components/widgets/background_image_container.dart';
 import '/models/visual_note.dart';
 import '/providers/visual_notes_provider.dart';
-import '/shared/components/toast.dart';
+import '/shared/components/helpers.dart';
 import '/shared/components/widgets/image_input.dart';
 import '/shared/components/widgets/white_space.dart';
 
@@ -30,7 +31,7 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
   final _dateController = TextEditingController();
   final _timeController = TextEditingController();
 
-  String? _currentStatus;
+  String? _currentStatusValue;
 
   final List<String> _statuses = ['Opened', 'Closed'];
 
@@ -39,18 +40,6 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
 
   void getImage(File image) {
     _visualNote = _visualNote!.copyWith(image: image);
-  }
-
-  Future<TimeOfDay?> _displayTimePicker(BuildContext context) async {
-    return await showTimePicker(context: context, initialTime: TimeOfDay.now());
-  }
-
-  Future<DateTime?> _displayDatePicker(BuildContext context) async {
-    return await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        lastDate: DateTime.now(),
-        firstDate: DateTime(2022));
   }
 
   void submitForm() async {
@@ -67,7 +56,6 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
           toast('Added Successfully');
         } catch (error) {
           toast('Something Went Wrong!');
-          print(error);
           return;
         }
       } else {
@@ -77,7 +65,6 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
           toast('Edited Successfully');
         } catch (error) {
           toast('Something Went Wrong!');
-          print(error);
           return;
         }
       }
@@ -100,7 +87,7 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
         };
         _dateController.text = DateFormat.yMd().format(_visualNote!.date['date']);
         _timeController.text = _visualNote!.date['time'];
-        _currentStatus = _visualNote!.isOpened ? 'Opened' : 'Closed';
+        _currentStatusValue = _visualNote!.isOpened ? 'Opened' : 'Closed';
       } else {
         _visualNote!.date['date'] = DateTime.now();
         _visualNote!.date['time'] = TimeOfDay.now().format(context);
@@ -109,7 +96,6 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
       }
       _isDidChangeDepCalled = true;
     }
-
     super.didChangeDependencies();
   }
 
@@ -137,16 +123,9 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
           ),
         ],
       ),
-      body: Container(
-        height: deviceSize.height,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.fill,
-            image: const AssetImage('assets/images/bg2.jpg'),
-            colorFilter: ColorFilter.mode(Colors.transparent.withOpacity(0.2), BlendMode.dstATop),
-          ),
-        ),
+      body: BackgroundImageContainer(
+        image: 'assets/images/bg2.jpg',
+        fit: BoxFit.fill,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
@@ -175,7 +154,8 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
                   ),
                   const WhiteSpace(isHorizontal: false),
                   TextFormField(
-                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.newline,
+                    keyboardType: TextInputType.multiline,
                     initialValue: _initialData['description'],
                     decoration: const InputDecoration(
                         hintText: 'Visual Note Description',
@@ -183,13 +163,13 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
                         alignLabelWithHint: true),
                     maxLines: 3,
                     validator: (value) {
-                      if (value!.isEmpty) {
+                      if (value!.trim().isEmpty) {
                         return 'Please Enter The Description!';
                       }
                       return null;
                     },
                     onSaved: (value) {
-                      _visualNote = _visualNote!.copyWith(description: value);
+                      _visualNote = _visualNote!.copyWith(description: value!.trim());
                     },
                   ),
                   const WhiteSpace(isHorizontal: false),
@@ -207,10 +187,8 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
                           controller: _dateController,
                           onTap: () async {
                             FocusScope.of(context).requestFocus(focusNode);
-
-                            final date = await _displayDatePicker(context);
+                            final date = await displayDatePicker(context);
                             if (date != null) {
-                              print('date set');
                               _visualNote!.date['date'] = date;
                               _dateController.text = DateFormat.yMd().format(date);
                             }
@@ -231,9 +209,8 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
                           },
                           onTap: () async {
                             FocusScope.of(context).requestFocus(focusNode);
-                            final time = await _displayTimePicker(context);
+                            final time = await displayTimePicker(context);
                             if (time != null) {
-                              print('time set');
                               _visualNote!.date['time'] = time.format(context);
                               _timeController.text = time.format(context);
                             }
@@ -245,13 +222,13 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
                   ),
                   const WhiteSpace(isHorizontal: false),
                   DropdownButtonFormField<dynamic>(
-                    value: _currentStatus,
+                    value: _currentStatusValue,
                     items: [
                       ..._statuses
                           .map((status) => DropdownMenuItem(value: status, child: Text(status)))
                     ],
                     onChanged: (value) {
-                      _currentStatus = value.toString();
+                      _currentStatusValue = value.toString();
                     },
                     decoration: const InputDecoration(labelText: 'Current Status'),
                     validator: (value) {

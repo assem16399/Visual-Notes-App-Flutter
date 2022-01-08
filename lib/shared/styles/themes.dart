@@ -8,6 +8,6 @@ final lightTheme = ThemeData(
         .copyWith(secondary: kSecondaryColor),
     inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder()),
     textTheme: const TextTheme(
-      bodyText1: TextStyle(fontSize: 25, color: Colors.black),
-      bodyText2: TextStyle(fontSize: 16, color: Colors.grey),
+      bodyText1: TextStyle(fontSize: 30, color: Colors.black),
+      bodyText2: TextStyle(fontSize: 20, color: Colors.grey),
     ));
