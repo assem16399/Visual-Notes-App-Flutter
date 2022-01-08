@@ -1,25 +1,18 @@
 import 'dart:io';
 
 class VisualNote {
-  //visual note id
   final int? id;
 
-  //visual note title
   final String title;
 
-  //visual note taken image;
   final File? image;
 
-  //Visual note description
   final String description;
 
-  //the date and time when the visual note taken
   final Map<String, dynamic> date;
 
-  //Visual note current status
   bool isOpened;
 
-  //constructor to fill the visual
   VisualNote({
     this.id,
     required this.title,
@@ -29,7 +22,6 @@ class VisualNote {
     required this.isOpened,
   });
 
-  // copyWith method to create a deep copy
   VisualNote copyWith({
     int? id,
     String? title,

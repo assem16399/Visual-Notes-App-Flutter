@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:visual_notes_app/shared/components/widgets/background_image_container.dart';
+import '/shared/components/widgets/background_image_container.dart';
 import '/models/visual_note.dart';
 import '/providers/visual_notes_provider.dart';
 import '/shared/components/helpers.dart';
@@ -42,31 +42,30 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
     _visualNote = _visualNote!.copyWith(image: image);
   }
 
-  void submitForm() async {
+  bool _isValidForm() {
     if (_visualNote!.image == null) {
       toast('Please take a picture first.');
-      return;
+      return false;
     }
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate()) return true;
+    return false;
+  }
+
+  void _submitForm() async {
+    if (_isValidForm()) {
       _formKey.currentState!.save();
-      if (_visualNote!.id == null) {
-        try {
-          await Provider.of<VisualNotesProvider>(context, listen: false)
-              .addVisualNote(_visualNote!);
+      try {
+        final visualNotesProvider = Provider.of<VisualNotesProvider>(context, listen: false);
+        if (_visualNote!.id == null) {
+          await visualNotesProvider.addVisualNote(_visualNote!);
           toast('Added Successfully');
-        } catch (error) {
-          toast('Something Went Wrong!');
-          return;
-        }
-      } else {
-        try {
-          await Provider.of<VisualNotesProvider>(context, listen: false)
-              .updateExistingNote(_visualNote!.id!, _visualNote!);
+        } else {
+          await visualNotesProvider.updateExistingNote(_visualNote!.id!, _visualNote!);
           toast('Edited Successfully');
-        } catch (error) {
-          toast('Something Went Wrong!');
-          return;
         }
+      } catch (error) {
+        toast('Something Went Wrong!');
+        return;
       }
       Navigator.of(context).pop();
     }
@@ -85,15 +84,13 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
           'title': _visualNote!.title,
           'description': _visualNote!.description,
         };
-        _dateController.text = DateFormat.yMd().format(_visualNote!.date['date']);
-        _timeController.text = _visualNote!.date['time'];
         _currentStatusValue = _visualNote!.isOpened ? 'Opened' : 'Closed';
       } else {
         _visualNote!.date['date'] = DateTime.now();
         _visualNote!.date['time'] = TimeOfDay.now().format(context);
-        _dateController.text = DateFormat.yMd().format(_visualNote!.date['date']);
-        _timeController.text = _visualNote!.date['time'];
       }
+      _dateController.text = DateFormat.yMd().format(_visualNote!.date['date']);
+      _timeController.text = _visualNote!.date['time'];
       _isDidChangeDepCalled = true;
     }
     super.didChangeDependencies();
@@ -118,7 +115,7 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
         title: Text(_visualNote!.id == null ? 'Create New Visual Note' : 'Edit Visual Note'),
         actions: [
           IconButton(
-            onPressed: submitForm,
+            onPressed: _submitForm,
             icon: const Icon(Icons.check),
           ),
         ],

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:visual_notes_app/modules/edit_visual_note/edit_visual_note_screen.dart';
-import 'package:visual_notes_app/modules/visual_note_details/visual_note_details_screen.dart';
-import 'package:visual_notes_app/providers/visual_notes_provider.dart';
-import 'package:visual_notes_app/shared/styles/themes.dart';
+import '/modules/edit_visual_note/edit_visual_note_screen.dart';
+import '/modules/visual_note_details/visual_note_details_screen.dart';
+import '/providers/visual_notes_provider.dart';
+import '/shared/styles/themes.dart';
 import 'modules/visual_notes_overview/visual_notes_overview_screen.dart';
 
 void main() {

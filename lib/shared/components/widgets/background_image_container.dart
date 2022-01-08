@@ -20,7 +20,7 @@ class BackgroundImageContainer extends StatelessWidget {
         image: DecorationImage(
           fit: fit,
           image: AssetImage(image),
-          colorFilter: ColorFilter.mode(Colors.transparent.withOpacity(0.2), BlendMode.dstATop),
+          colorFilter: ColorFilter.mode(Colors.transparent.withOpacity(0.1), BlendMode.dstATop),
         ),
       ),
       child: child,

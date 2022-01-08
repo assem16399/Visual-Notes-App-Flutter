@@ -1,32 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:visual_notes_app/models/visual_note.dart';
-import 'package:visual_notes_app/shared/network/local/db_helper.dart';
+import '/models/visual_note.dart';
+import '/shared/network/local/db_helper.dart';
 
 //this class is considered as your data container (provider)
 class VisualNotesProvider with ChangeNotifier {
   // List of Visual Notes
-  List<VisualNote> _visualNotes = [
-    // VisualNote(
-    //     id: 1,
-    //     title: 'Visual Note Sample 1',
-    //     image: null,
-    //     description: 'short description 1',
-    //     date: {'date': DateTime.now(), 'time': TimeOfDay.now()},
-    //     isOpened: true),
-    // VisualNote(
-    //     id: 2,
-    //     title: 'Visual Note Sample 2',
-    //     image: null,
-    //     description: 'This should be a very long description for the visual note sample 2 to be '
-    //         'displayed in only one line',
-    //     date: {
-    //       'date': DateTime.now(),
-    //       'time': TimeOfDay.now(),
-    //     },
-    //     isOpened: false),
-  ];
+  List<VisualNote> _visualNotes = [];
 
   // Getter method to return a clone of the visual notes list to avoid privacy leaks
   List<VisualNote> get visualNotes {
@@ -40,6 +21,7 @@ class VisualNotesProvider with ChangeNotifier {
   Future<void> fetchAndSetVisualNotes() async {
     try {
       final extractedData = await DBHelper.getData('visual_notes');
+      if (extractedData.isEmpty) return;
       _visualNotes = extractedData
           .map(
             (visualNote) => VisualNote(

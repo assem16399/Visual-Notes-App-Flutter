@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:visual_notes_app/modules/visual_note_details/visual_note_details_screen.dart';
-import 'package:visual_notes_app/providers/visual_notes_provider.dart';
+import '/modules/visual_note_details/visual_note_details_screen.dart';
+import '/providers/visual_notes_provider.dart';
 
 import 'white_space.dart';
 
@@ -24,11 +24,8 @@ class VisualNotesListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //device size
     final deviceSize = MediaQuery.of(context).size;
-    // device
     final bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
-
     return InkWell(
       onTap: () {
         Navigator.of(context).pushNamed(VisualNotesDetails.routeName, arguments: id);
@@ -75,13 +72,44 @@ class VisualNotesListItem extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  ListItemIcon(
-                    iconData: Icons.delete,
-                    onPressed: () {
-                      Provider.of<VisualNotesProvider>(context, listen: false).deleteVisualNote(id);
+                  IconButton(
+                    splashRadius: 20,
+                    onPressed: () async {
+                      final _deleteConfirmed = await showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Are You Sure?'),
+                          content: const Text(
+                            'Do you want to remove this Visual Note, by deleting it '
+                            'you won\'t be able to retrieve it again.',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(false);
+                              },
+                              child: const Text('NO'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(true);
+                              },
+                              child: const Text('YES'),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (_deleteConfirmed) {
+                        Provider.of<VisualNotesProvider>(context, listen: false)
+                            .deleteVisualNote(id);
+                      }
                     },
-                    color: Colors.red,
-                  ),
+                    icon: const Icon(
+                      Icons.delete,
+                      size: 30,
+                      color: Colors.red,
+                    ),
+                  )
                 ],
               )
             ],
@@ -89,26 +117,6 @@ class VisualNotesListItem extends StatelessWidget {
           width: double.infinity,
           height: isLandscape ? deviceSize.height * 0.25 : deviceSize.height * 0.15,
         ),
-      ),
-    );
-  }
-}
-
-class ListItemIcon extends StatelessWidget {
-  const ListItemIcon({Key? key, required this.iconData, required this.onPressed, this.color})
-      : super(key: key);
-  final IconData iconData;
-  final Color? color;
-  final void Function() onPressed;
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      splashRadius: 20,
-      onPressed: onPressed,
-      icon: Icon(
-        iconData,
-        size: 30,
-        color: color,
       ),
     );
   }
