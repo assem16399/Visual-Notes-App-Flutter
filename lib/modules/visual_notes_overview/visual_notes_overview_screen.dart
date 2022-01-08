@@ -27,27 +27,37 @@ class _VisualNotesOverviewScreenState extends State<VisualNotesOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Visual Notes'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: FutureBuilder(
-          future: _visualNotesFuture,
-          builder: (context, dataSnapShoot) {
-            if (dataSnapShoot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (dataSnapShoot.hasError) {
-              return const Center(
-                child: Text('Something Went Wrong!'),
-              );
-            } else {
-              return const VisualNotesList();
-            }
-          },
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: const AssetImage('assets/images/chair.jpg'),
+            colorFilter: ColorFilter.mode(Colors.transparent.withOpacity(0.2), BlendMode.dstATop),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: FutureBuilder(
+            future: _visualNotesFuture,
+            builder: (context, dataSnapShoot) {
+              if (dataSnapShoot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (dataSnapShoot.hasError) {
+                return const Center(
+                  child: Text('Something Went Wrong!'),
+                );
+              } else {
+                return const VisualNotesList();
+              }
+            },
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

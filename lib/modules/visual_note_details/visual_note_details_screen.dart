@@ -10,6 +10,7 @@ class VisualNotesDetails extends StatelessWidget {
   static const routeName = '/visual-note-details';
   @override
   Widget build(BuildContext context) {
+    print('vnote details screen building...');
     // visual note Id
     final id = ModalRoute.of(context)!.settings.arguments as int;
     //visual note data of that id
@@ -22,62 +23,72 @@ class VisualNotesDetails extends StatelessWidget {
       appBar: AppBar(
         title: Text(visualNote.title),
       ),
-      body: isLandscape
-          ? Container()
-          : Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      height: deviceSize.height * 0.35,
-                      child: InteractiveViewer(
-                        panEnabled: false,
-                        boundaryMargin: const EdgeInsets.all(100),
-                        minScale: 0.5,
-                        maxScale: 2,
-                        child: Hero(
-                          tag: visualNote.id!,
-                          child: Image.file(visualNote.image!),
+      body: Container(
+        height: deviceSize.height,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              fit: BoxFit.fitHeight,
+              image: const AssetImage('assets/images/bg.jpg'),
+              colorFilter:
+                  ColorFilter.mode(Colors.transparent.withOpacity(0.2), BlendMode.dstATop)),
+        ),
+        child: isLandscape
+            ? Container()
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        height: deviceSize.height * 0.35,
+                        child: InteractiveViewer(
+                          panEnabled: false,
+                          boundaryMargin: const EdgeInsets.all(100),
+                          minScale: 0.5,
+                          maxScale: 2,
+                          child: Hero(
+                            tag: visualNote.id!,
+                            child: Image.file(visualNote.image!),
+                          ),
                         ),
                       ),
-                    ),
-                    const WhiteSpace(
-                      isHorizontal: false,
-                    ),
-                    const Title(
-                      title: 'Case Description',
-                    ),
-                    TitleDetails(text: visualNote.description),
-                    const WhiteSpace(
-                      isHorizontal: false,
-                    ),
-                    const Title(
-                      title: 'Date Taken',
-                    ),
-                    TitleDetails(text: DateFormat.yMd().format(visualNote.date['date'])),
-                    TitleDetails(text: visualNote.date['time']),
-                    const WhiteSpace(
-                      isHorizontal: false,
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const Title(
-                          title: 'Status',
-                        ),
-                        const WhiteSpace(
-                          isHorizontal: true,
-                        ),
-                        TitleDetails(text: visualNote.isOpened ? 'Opened' : 'Closed'),
-                      ],
-                    )
-                  ],
+                      const WhiteSpace(
+                        isHorizontal: false,
+                      ),
+                      const Title(
+                        title: 'Case Description',
+                      ),
+                      TitleDetails(text: visualNote.description),
+                      const WhiteSpace(
+                        isHorizontal: false,
+                      ),
+                      const Title(
+                        title: 'Date Taken',
+                      ),
+                      TitleDetails(text: DateFormat.yMd().format(visualNote.date['date'])),
+                      TitleDetails(text: visualNote.date['time']),
+                      const WhiteSpace(
+                        isHorizontal: false,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          const Title(
+                            title: 'Status',
+                          ),
+                          const WhiteSpace(
+                            isHorizontal: true,
+                          ),
+                          TitleDetails(text: visualNote.isOpened ? 'Opened' : 'Closed'),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).pushNamed(EditVisualNotesScreen.routeName, arguments: id);

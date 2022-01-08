@@ -8,13 +8,26 @@ class VisualNotesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('visual notes list is building');
     // Assign a listener to the visual notes provider
     final visualNotesProvider = Provider.of<VisualNotesProvider>(context);
 
     final visualNotes = visualNotesProvider.visualNotes;
     return visualNotes.isEmpty
-        ? const Center(
-            child: Text('Start Adding Some Notes'),
+        ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Start Adding Some Notes',
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                Text(
+                  '📷📓',
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+              ],
+            ),
           )
         : ListView.separated(
             separatorBuilder: (context, _) => const Divider(),
