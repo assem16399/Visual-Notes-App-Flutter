@@ -2,7 +2,7 @@
     package="com.example.visual_notes_app">
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
    <application
-        android:label="visual_notes_app"
+        android:label="V NOTES"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
