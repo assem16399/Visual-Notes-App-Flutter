@@ -47,20 +47,25 @@ class PortraitUI extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                width: double.infinity,
-                height: deviceSize.height * 0.35,
-                child: InteractiveViewer(
-                  panEnabled: false,
-                  boundaryMargin: const EdgeInsets.all(100),
-                  minScale: 0.5,
-                  maxScale: 2,
-                  child: Hero(
-                    tag: visualNote.id!,
-                    child: Image.file(visualNote.image!),
+              Center(
+                child: SizedBox(
+                  height: deviceSize.height * 0.35,
+                  child: InteractiveViewer(
+                    panEnabled: false,
+                    boundaryMargin: const EdgeInsets.all(100),
+                    minScale: 0.5,
+                    maxScale: 2,
+                    child: Hero(
+                      tag: visualNote.id!,
+                      child: Image.file(
+                        visualNote.image!,
+                        // fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -92,19 +97,19 @@ class LandscapeUI extends StatelessWidget {
       width: deviceSize.width,
       child: Row(
         children: [
-          SizedBox(
-            height: deviceSize.height,
-            width: deviceSize.width * 0.5,
-            child: InteractiveViewer(
-              panEnabled: false,
-              boundaryMargin: const EdgeInsets.all(100),
-              minScale: 0.5,
-              maxScale: 2,
-              child: Hero(
-                tag: visualNote.id!,
-                child: Image.file(
-                  visualNote.image!,
-                  fit: BoxFit.cover,
+          Center(
+            child: SizedBox(
+              width: deviceSize.width * 0.5,
+              child: InteractiveViewer(
+                panEnabled: false,
+                boundaryMargin: const EdgeInsets.all(100),
+                minScale: 0.5,
+                maxScale: 2,
+                child: Hero(
+                  tag: visualNote.id!,
+                  child: Image.file(
+                    visualNote.image!,
+                  ),
                 ),
               ),
             ),
@@ -112,11 +117,14 @@ class LandscapeUI extends StatelessWidget {
           BackgroundImageContainer(
             image: 'assets/images/bg.jpg',
             height: deviceSize.height,
-            width: deviceSize.width * 0.5,
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: VisualNoteInfo(visualNote: visualNote),
+            width: (deviceSize.width * 0.5),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: VisualNoteInfo(visualNote: visualNote),
+                ),
               ),
             ),
           ),

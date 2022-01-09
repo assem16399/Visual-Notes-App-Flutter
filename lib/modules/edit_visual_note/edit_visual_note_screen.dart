@@ -128,6 +128,7 @@ class _EditVisualNotesScreenState extends State<EditVisualNotesScreen> {
           child: Form(
             key: _formKey,
             child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
                   ImageInput(

@@ -34,6 +34,7 @@ class VisualNotesList extends StatelessWidget {
             ),
           )
         : ListView.separated(
+            physics: const BouncingScrollPhysics(),
             separatorBuilder: (context, _) => const Divider(),
             itemCount: visualNotes.length,
             itemBuilder: (context, index) => VisualNotesListItem(
