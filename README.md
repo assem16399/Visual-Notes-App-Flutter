@@ -1,6 +1,6 @@
 # V Notes App
 
-Mobile application used by inspectors to track manufacturing defects for a chairs’ factory by taking visual notes using the device camera.
+Mobile application built using Google's Flutter framework. This app can be used by inspectors to track manufacturing defects for a chairs’ factory by taking visual notes using the device camera.
 The application will be used to display, add, remove a list of visual
 note items.
 
