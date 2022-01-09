@@ -13,7 +13,9 @@ note items.
 5- Filter visual notes by status
 
 ## Screenshots 
-![Screenshot_1641728266](https://user-images.githubusercontent.com/56374551/148684554-56e1e466-96a9-4587-ae4e-74ceb258264d.png)
+<img src="https://user-images.githubusercontent.com/56374551/148684554-56e1e466-96a9-4587-ae4e-74ceb258264d.png" width="200">
+
+
 ![Screenshot_1641728191](https://user-images.githubusercontent.com/56374551/148684577-5d18f718-a6fb-48d0-9664-1c1f8c3f6e01.png)
 ![Screenshot_1641728195](https://user-images.githubusercontent.com/56374551/148684598-27a5d6d1-9a89-4689-b4a6-dbfb12a41179.png)
 ![Screenshot_1641728208](https://user-images.githubusercontent.com/56374551/148684608-55c3d9d9-40ba-44b5-8ad5-2cf758ee0ac6.png)
