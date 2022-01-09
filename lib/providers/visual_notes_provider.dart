@@ -16,22 +16,29 @@ class VisualNotesProvider with ChangeNotifier {
     return [..._visualNotes];
   }
 
+  // Getter method to return only opened visual notes
   List<VisualNote> get openedVisualNotes {
     return _visualNotes.where((visualNote) => visualNote.isOpened).toList();
   }
 
+  // Getter method to return only closed visual notes
   List<VisualNote> get closedVisualNotes {
     return _visualNotes.where((visualNote) => !visualNote.isOpened).toList();
   }
 
+  // Method to return the visual note of this id
   VisualNote findVisualNoteById(int id) {
     return _visualNotes.firstWhere((visualNote) => visualNote.id == id);
   }
 
+  // Method to retrieve stored visual notes in device sql database
   Future<void> fetchAndSetVisualNotes() async {
     try {
-      final appDir = await sys_paths.getApplicationDocumentsDirectory();
-
+      late final Directory appDir;
+      if (Platform.isIOS) {
+        // get the app docs directory if the used platform is iOS
+        appDir = await sys_paths.getApplicationDocumentsDirectory();
+      }
       final extractedData = await DBHelper.getData('visual_notes');
       if (extractedData.isEmpty) return;
       _visualNotes = extractedData
@@ -39,7 +46,9 @@ class VisualNotesProvider with ChangeNotifier {
             (visualNote) => VisualNote(
                 id: visualNote['id'],
                 title: visualNote['title'],
-                image: File('${appDir.path}/${visualNote['image']}'),
+                image: File(Platform.isIOS
+                    ? '${appDir.path}/${visualNote['image']}'
+                    : visualNote['image']),
                 description: visualNote['description'],
                 date: {
                   'date': DateTime.parse(visualNote['date']),
@@ -54,12 +63,19 @@ class VisualNotesProvider with ChangeNotifier {
     }
   }
 
+  // Method to add visual note in device sql database and visual notes list
   Future<void> addVisualNote(VisualNote visualNote) async {
     try {
-      final appDir = await sys_paths.getApplicationDocumentsDirectory();
+      late final Directory appDir;
+      if (Platform.isIOS) {
+        // get the app docs directory if the used platform is iOS
+        appDir = await sys_paths.getApplicationDocumentsDirectory();
+      }
       final id = await DBHelper.insert('visual_notes', {
-        'image': visualNote.image!.path
-            .substring(appDir.path.length, visualNote.image!.path.length),
+        'image': Platform.isIOS
+            ? visualNote.image!.path
+                .substring(appDir.path.length, visualNote.image!.path.length)
+            : visualNote.image!.path,
         'title': visualNote.title,
         'description': visualNote.description,
         'date': visualNote.date['date'].toIso8601String(),
@@ -73,14 +89,21 @@ class VisualNotesProvider with ChangeNotifier {
     }
   }
 
+  // Method to update visual note in device sql database and visual notes list
   Future<void> updateExistingNote(int id, VisualNote editedVisualNote) async {
     try {
-      final appDir = await sys_paths.getApplicationDocumentsDirectory();
+      late final Directory appDir;
+      if (Platform.isIOS) {
+        // get the app docs directory if the used platform is iOS
+        appDir = await sys_paths.getApplicationDocumentsDirectory();
+      }
       await DBHelper.update(
           'visual_notes',
           {
-            'image': editedVisualNote.image!.path.substring(
-                appDir.path.length, editedVisualNote.image!.path.length),
+            'image': Platform.isIOS
+                ? editedVisualNote.image!.path.substring(
+                    appDir.path.length, editedVisualNote.image!.path.length)
+                : editedVisualNote.image!.path,
             'title': editedVisualNote.title,
             'description': editedVisualNote.description,
             'date': editedVisualNote.date['date'].toIso8601String(),
@@ -97,6 +120,7 @@ class VisualNotesProvider with ChangeNotifier {
     }
   }
 
+  // Method to delete visual note from device sql database and visual notes list
   void deleteVisualNote(int id) {
     _visualNotes.removeWhere((visualNote) => visualNote.id == id);
     notifyListeners();
