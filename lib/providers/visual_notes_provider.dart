@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart' as sys_paths;
+
 import '/models/visual_note.dart';
 import '/shared/network/local/db_helper.dart';
 
@@ -28,6 +30,8 @@ class VisualNotesProvider with ChangeNotifier {
 
   Future<void> fetchAndSetVisualNotes() async {
     try {
+      final appDir = await sys_paths.getApplicationDocumentsDirectory();
+
       final extractedData = await DBHelper.getData('visual_notes');
       if (extractedData.isEmpty) return;
       _visualNotes = extractedData
@@ -35,7 +39,7 @@ class VisualNotesProvider with ChangeNotifier {
             (visualNote) => VisualNote(
                 id: visualNote['id'],
                 title: visualNote['title'],
-                image: File(visualNote['image']),
+                image: File('${appDir.path}/${visualNote['image']}'),
                 description: visualNote['description'],
                 date: {
                   'date': DateTime.parse(visualNote['date']),
@@ -52,8 +56,10 @@ class VisualNotesProvider with ChangeNotifier {
 
   Future<void> addVisualNote(VisualNote visualNote) async {
     try {
+      final appDir = await sys_paths.getApplicationDocumentsDirectory();
       final id = await DBHelper.insert('visual_notes', {
-        'image': visualNote.image!.path,
+        'image': visualNote.image!.path
+            .substring(appDir.path.length, visualNote.image!.path.length),
         'title': visualNote.title,
         'description': visualNote.description,
         'date': visualNote.date['date'].toIso8601String(),
@@ -69,10 +75,12 @@ class VisualNotesProvider with ChangeNotifier {
 
   Future<void> updateExistingNote(int id, VisualNote editedVisualNote) async {
     try {
+      final appDir = await sys_paths.getApplicationDocumentsDirectory();
       await DBHelper.update(
           'visual_notes',
           {
-            'image': editedVisualNote.image!.path,
+            'image': editedVisualNote.image!.path.substring(
+                appDir.path.length, editedVisualNote.image!.path.length),
             'title': editedVisualNote.title,
             'description': editedVisualNote.description,
             'date': editedVisualNote.date['date'].toIso8601String(),
@@ -80,7 +88,8 @@ class VisualNotesProvider with ChangeNotifier {
             'status': editedVisualNote.isOpened ? 1 : 0
           },
           id);
-      final editedNoteIndex = _visualNotes.indexWhere((visualNote) => visualNote.id == id);
+      final editedNoteIndex =
+          _visualNotes.indexWhere((visualNote) => visualNote.id == id);
       _visualNotes[editedNoteIndex] = editedVisualNote;
       notifyListeners();
     } catch (error) {
